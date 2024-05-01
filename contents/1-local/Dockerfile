@@ -5,7 +5,7 @@ FROM ubuntu:20.04
 RUN apt-get update && apt-get install -y nginx
 
 # このコンテナが外部に公開したいポート番号（ドキュメントのような役割）
-EXPOSE 9000
+EXPOSE 80
 
 # ホストのindex.htmlをコンテナにコピー
 COPY ./index.html /var/www/html/index.html
