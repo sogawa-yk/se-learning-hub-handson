@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pod Launcher</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    #status {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Kubernetes Pod Launcher</h1>
+  <button id="startPod">Start Pod</button>
+  <div id="status">Pod is not running.</div>
+
+  <script>
+    document.getElementById('startPod').addEventListener('click', function () {
+      document.getElementById('status').innerHTML = 'Starting Pod...';
+      fetch('/api/start-pod', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => checkStatus(data.podName))
+        .catch(error => {
+          document.getElementById('status').innerHTML = 'Error starting pod.';
+          console.error('Error:', error);
+        });
+    });
+
+    function checkStatus(podName) {
+      fetch(`/api/status/${podName}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'Running') {
+            document.getElementById('status').innerHTML = `Pod ${podName} is running.`;
+          } else {
+            document.getElementById('status').innerHTML = `Status: ${data.status}`;
+            setTimeout(() => checkStatus(podName), 1000); // Check status every 1 second
+          }
+        })
+        .catch(error => {
+          document.getElementById('status').innerHTML = 'Error fetching status.';
+          console.error('Error:', error);
+        });
+    }
+  </script>
+</body>
+
+</html>
