@@ -11,6 +11,6 @@ RUN pip install -r requirements.txt
 # アプリケーションファイルをコピー
 COPY app .
 
-COPY manifests/web-shell.yaml /config/
+COPY manifests/ /config/
 # アプリケーションの起動
 CMD ["python", "run.py"]

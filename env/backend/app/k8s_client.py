@@ -15,10 +15,31 @@ def init_k8s_client():
 # APIインスタンスの初期化
 init_k8s_client()
 
-def create_pod(manifest_path):
+def create_pod(pod_name):
     # マニフェストファイルからPodを作成
+    template_pod_manifest_path = '/config/web-shell.yaml'
+    template_svc_manifest_path = '/config/web-shell-service.yaml'
+    output_path = '/config/'
     try:
-        utils.create_from_yaml(client.ApiClient(), yaml_file=manifest_path, namespace='default')
+        with open(template_pod_manifest_path, 'r') as file:
+            template = file.read()
+        pod_manifest_yaml = template.format(pod_name=pod_name)
+        
+        with open(template_svc_manifest_path, 'r') as file:
+            template = file.read()
+        svc_manifest_yaml = template.format(pod_name=pod_name)
+
+        pod_manifest_path = output_path + pod_name + '.yaml'
+        svc_manifest_path = output_path + pod_name + '-service.yaml'
+        
+        with open(pod_manifest_path, 'w') as file:
+            file.write(pod_manifest_yaml)
+        
+        with open(svc_manifest_path, 'w') as file:
+            file.write(svc_manifest_yaml)
+
+        utils.create_from_yaml(client.ApiClient(), yaml_file=pod_manifest_path, namespace='default')
+        utils.create_from_yaml(client.ApiClient(), yaml_file=svc_manifest_path, namespace='default')
         return "Pod creation initiated successfully."
     except Exception as e:
         print(f"Failed to create pod: {str(e)}", file=sys.stderr)

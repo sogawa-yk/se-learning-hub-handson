@@ -19,17 +19,37 @@
 
 <body>
   <h1>Kubernetes Pod Launcher</h1>
-  <button id="startPod">Start Pod</button>
+  <form id="podForm" action="/api/start-pod" method="post">
+    <label for="user-name">Enter your name:</label>
+    <input type="text" id="user-name" name="user-name" required>
+    <input type="submit" value="Start Pod">
+  </form>
   <div id="status">Pod is not running.</div>
 
   <script>
-    document.getElementById('startPod').addEventListener('click', function () {
+    document.getElementById('podForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const formData = new FormData(this);
       document.getElementById('status').innerHTML = 'Starting Pod...';
-      fetch('/api/start-pod', { method: 'POST' })
-        .then(response => response.json())
-        .then(data => checkStatus(data.podName))
+      fetch('/api/start-pod', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok. Status: ' + response.status);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.podName) {
+            checkStatus(data.podName);
+          } else {
+            throw new Error('Invalid data received.');
+          }
+        })
         .catch(error => {
-          document.getElementById('status').innerHTML = 'Error starting pod.';
+          document.getElementById('status').innerHTML = 'Error starting pod: ' + error.message;
           console.error('Error:', error);
         });
     });
@@ -46,11 +66,13 @@
           }
         })
         .catch(error => {
-          document.getElementById('status').innerHTML = 'Error fetching status.';
+          document.getElementById('status').innerHTML = 'Error fetching status: ' + error.message;
           console.error('Error:', error);
         });
     }
   </script>
+
+
 </body>
 
 </html>

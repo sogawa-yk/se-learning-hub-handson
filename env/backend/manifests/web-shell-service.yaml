@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-for-user-${USER_ID}
+  name: service-for-user-{pod_name}
 spec:
   type: ClusterIP
   selector:
-    user-id: "${USER_ID}" # PodのセレクターにユーザーIDを使用
+    user-id: {pod_name} # PodのセレクターにユーザーIDを使用
   ports:
     - protocol: TCP
       port: 80

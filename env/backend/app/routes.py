@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, send_from_directory
+from flask import Blueprint, jsonify, send_from_directory, request
 from k8s_client import create_pod, get_pod_status
 from flask import current_app as app
 
@@ -10,9 +10,8 @@ def index():
 
 @main.route('/api/start-pod', methods=['POST'])
 def start_pod():
-    manifest_path = '/config/web-shell.yaml'
-    create_pod(manifest_path)
-    pod_name = 'web-shell-pod'
+    pod_name = request.form['user-name']
+    create_pod(pod_name)
     return jsonify({'podName': pod_name}), 200
 
 @main.route('/api/status/<pod_name>', methods=['GET'])
