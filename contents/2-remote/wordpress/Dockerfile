@@ -2,7 +2,7 @@
 FROM wordpress:latest
 
 # WordPressとMySQLの接続情報
-ENV WORDPRESS_DB_HOST db:3306
+ENV WORDPRESS_DB_HOST 127.0.0.1:3306
 ENV WORDPRESS_DB_USER wordpress_user
 ENV WORDPRESS_DB_PASSWORD wordpress_password
 ENV WORDPRESS_DB_NAME wordpress
