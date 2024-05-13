@@ -20,7 +20,7 @@
 <body>
   <h1>Kubernetes Pod Launcher</h1>
   <form id="podForm" action="/api/start-pod" method="post">
-    <label for="user-name">Enter your name:</label>
+    <label for="user-name">Enter your pod name:</label>
     <input type="text" id="user-name" name="user-name" required>
     <input type="submit" value="Start Pod">
   </form>
@@ -30,6 +30,7 @@
     document.getElementById('podForm').addEventListener('submit', function (event) {
       event.preventDefault();
       const formData = new FormData(this);
+      const podName = formData.get('user-name');
       document.getElementById('status').innerHTML = 'Starting Pod...';
       fetch('/api/start-pod', {
         method: 'POST',
@@ -59,7 +60,9 @@
         .then(response => response.json())
         .then(data => {
           if (data.status === 'Running') {
-            document.getElementById('status').innerHTML = `Pod ${podName} is running.`;
+            setTimeout(() => {
+              window.location.href = `http://192.18.159.216/env/${podName}`; // Redirect after 5 seconds
+            }, 5000);
           } else {
             document.getElementById('status').innerHTML = `Status: ${data.status}`;
             setTimeout(() => checkStatus(podName), 1000); // Check status every 1 second
@@ -71,7 +74,6 @@
         });
     }
   </script>
-
 
 </body>
 
