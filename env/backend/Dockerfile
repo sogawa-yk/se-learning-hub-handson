@@ -1,6 +1,9 @@
 # 基本イメージ
 FROM python:3.8-slim
 
+# 環境変数設定
+ARG MY_INGRESS_IP
+ENV INGRESS_IP=${MY_INGRESS_IP}
 # 作業ディレクトリの設定
 WORKDIR /app
 

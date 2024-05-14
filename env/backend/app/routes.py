@@ -1,12 +1,14 @@
-from flask import Blueprint, jsonify, send_from_directory, request
+from flask import Blueprint, jsonify, send_from_directory, request, render_template
 from k8s_client import create_pod, get_pod_status
 from flask import current_app as app
+import os
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    return send_from_directory(app.static_folder, 'index.html')
+    ingress_ip = os.getenv('INGRESS_IP')
+    return render_template('index.html', ingress_ip=ingress_ip)
 
 @main.route('/api/start-pod', methods=['POST'])
 def start_pod():

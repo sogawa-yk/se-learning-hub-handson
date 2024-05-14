@@ -27,6 +27,7 @@
   <div id="status">Pod is not running.</div>
 
   <script>
+    const INGRESS_IP = "{{ ingress_ip }}";
     document.getElementById('podForm').addEventListener('submit', function (event) {
       event.preventDefault();
       const formData = new FormData(this);
@@ -61,7 +62,7 @@
         .then(data => {
           if (data.status === 'Running') {
             setTimeout(() => {
-              window.location.href = `http://192.18.159.216/env/${podName}`; // Redirect after 5 seconds
+              window.location.href = `http://${INGRESS_IP}/env/${podName}`; // Redirect after 5 seconds
             }, 5000);
           } else {
             document.getElementById('status').innerHTML = `Status: ${data.status}`;
